@@ -6,70 +6,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Xaliverse!</title>
-    <script defer src="./src/logic/Xaliverse2.js"></script>
-    <link rel="stylesheet" href="./src/ui/Syle2.css">
+    <script defer src="./src/logic/Xaliverse.js"></script>
+    <link rel="stylesheet" href="./src/ui/Style.css">
 
 </head>
 
 <body>
+    <h1>¡Xaliverse!</h1>
 
-    <h1 id="titulo">¡Xaliverse!</h1>
-
-    <section id="seleccionar-mascota">
+    <section id="seleccionar-mascota" class="layout-mascota">
 
         <h2>Selecciona tu mascota</h2>
 
-        <div id="mascota-hipodoge">
-
-            <label for="hipodoge">Hipodoge</label>
-            <input type="radio" name="xaliverse" id="hipodoge"><br>
-
+        <div id="layout-xaliburz" class="grupo-mascotas">
+            
         </div>
-
-        <div id="mascota-capipepo">
-
-            <label for="capipepo">Capipepo</label>
-            <input type="radio" name="xaliverse" id="capipepo"><br>
-
-        </div>
-
-        <div id="mascota-ratigueya">
-
-            <label for="ratigueya">Ratigueya</label>
-            <input type="radio" name="xaliverse" id="ratigueya"><br>
-
-        </div>
-
-
         
-        <button id="btn-seleccionar-mascota">Seleccionar</button>
+        <button id="btn-seleccionar-mascota" class="btn-seleccionar-mascota">Seleccionar</button>
 
     </section>
 
-    <section id="seleccionar-ataque">
+    <section id="perfil-jugadores" class="layout-perfil-jugadores">
+
+        <div class="perfil-jugador">
+            <h4>Perfil del Jugador</h4>
+            <p>Tu Mascota: <span id="mascota-jugador"></span>
+            <br> Vidas Actuales: <span id="vidas-jugador">0</span></p>
+            <span id="resultado-jugador"></span>
+        </div>
+
+        <div class="perfil-enemigo">
+            <h4>Perfil del Enemigo</h4>
+            <p>Mascota del Enemigo: <span id="mascota-enemiga"></span>
+            <br> Vidas Actuales: <span id="vidas-enemigo">0</span></p>
+            <span id="resultado-enemigo"></span>
+        </div>
+
+    </section>
+
+    <section id="seleccionar-ataque" class="layout-ataques">
 
         <h2>Selecciona tu ataque</h2>
 
-        <p>Tu mascota <span id="mascota-jugador">Miguel</span> tiene <span id="vidas">3</span> vidas</p>
-        <p>La mascota del enemigo <span id="mascota-enemiga"></span> tiene <span id="vidas-enemigo">3</span> vidas</p>
+        <div id="layout-btn-ataque" class="botones-ataques">
 
-        <button id="boton-fuego">Fuego</button>
-        <button id="boton-agua">Agua</button>
-        <button id="boton-tierra">Tierra</button>
+        </div>
 
     </section>
 
-    <section id="anuncio-combate">
-        
+    <div class="layout-reiniciar">
+        <button id="boton-reiniciar" class="btn-reiniciar">Volver a jugar</button>  
+    </div>
+
+    <section id="anuncio-combate" class="layout-combate">
         <h2>Combate</h2>
         
-
     </section>
 
-    <p id="boton-reinicio">
-        Si quieres volver a jugar dale click al <strong>Botón</strong> <br> 
-        <button>Volver a jugar</button>
-    </p>
 
 </body>
 
