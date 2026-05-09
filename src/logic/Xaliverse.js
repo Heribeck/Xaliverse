@@ -27,6 +27,8 @@ const spnVictoriasJugador = $("#victorias-jugador")
 const spnVictoriasEnemigo = $("#victorias-enemigo")
 const sAnuncioCombateJugador = $("#resultado-jugador")
 const sAnuncioCombateEnemigo = $("#resultado-enemigo")
+const imgJugador = $("#img-jugador")
+const imgEnemigo = $("#img-enemigo")
 
 // --- VARIABLES GLOBALES
 let name;
@@ -53,12 +55,12 @@ let ataqueJugador = []
 let ataqueEnemigo = []
 
 // --- Integración de Objetos en los Arrays
-let capipepo = new Xaliburz("Capipepo", 3, "./assets/mokepons_mokepon_capipepo_attack.png")
-let hipodoge = new Xaliburz("Hipodoge", 3, "./assets/mokepons_mokepon_hipodoge_attack.png")
+let ukato = new Xaliburz("Ukato", 3, "https://img.pokemondb.net/sprites/black-white/normal/bisharp.png")
+let tinkaton = new Xaliburz("Tinkaton", 3, "https://img.pokemondb.net/sprites/scarlet-violet/normal/tinkaton.png")
 let ratigueya = new Xaliburz("Ratigueya", 3, "./assets/mokepons_mokepon_ratigueya_attack.png")
 
 // --- Pensar en esta sección???
-capipepo.ataques.push(
+ukato.ataques.push(
     { nombre: "Fuego", id: "boton-fuego" },
     { nombre: "Fuego", id: "boton-fuego" },
     { nombre: "Fuego", id: "boton-fuego" },
@@ -66,7 +68,7 @@ capipepo.ataques.push(
     { nombre: "Tierra", id: "boton-tierra" }
 )
 
-hipodoge.ataques.push(
+tinkaton.ataques.push(
     { nombre: "Agua", id: "boton-agua" },
     { nombre: "Agua", id: "boton-agua" },
     { nombre: "Agua", id: "boton-agua" },
@@ -82,7 +84,7 @@ ratigueya.ataques.push(
     { nombre: "Agua", id: "boton-agua" }
 )
 
-mascotas.push(capipepo, hipodoge, ratigueya)
+mascotas.push(ukato, tinkaton, ratigueya)
 
 
 
@@ -109,19 +111,19 @@ mascotas.forEach(mascota => {
     `
     layoutXaliburz.innerHTML += plantillaMascotas
 
-    inputHipodoge = $("#Hipodoge")
-    inputCapipepo = $("#Capipepo")
+    inputTinkaton = $("#Tinkaton")
+    inputUkato = $("#Ukato")
     inputRatigueya = $("#Ratigueya")
 })
 
 // --- FUNCION SELECCIÓN DE LA MASCOTA DEL JUGADOR
 function seleccionarMascotaJugador() {
 
-    if (inputHipodoge.checked) {
-        mascotaJugador = inputHipodoge.id
+    if (inputTinkaton.checked) {
+        mascotaJugador = inputTinkaton.id
         idMascotaJugador.textContent = mascotaJugador
-    } else if (inputCapipepo.checked) {
-        mascotaJugador = inputCapipepo.id
+    } else if (inputUkato.checked) {
+        mascotaJugador = inputUkato.id
         idMascotaJugador.textContent = mascotaJugador
     } else if (inputRatigueya.checked) {
         mascotaJugador = inputRatigueya.id
@@ -146,6 +148,18 @@ function seleccionarMascotaEnemigo() {
     sectionSeleccionarAtaque.style.display = "flex"
     
     secuenciaAtaques()
+    mostrarImgJugador()
+    mostrarImgEnemigo()
+}
+
+function mostrarImgJugador() {
+  
+    imgJugador.src = mascotas.find(mascota => mascota.nombre === mascotaJugador).img
+}
+
+function mostrarImgEnemigo() {
+   
+    imgEnemigo.src = mascotas.find(mascota => mascota.nombre === mascotaEnemiga).img
 }
 
 // --- FUNCIONES DE LOS ATAQUES DEL JUGADOR
