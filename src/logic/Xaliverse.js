@@ -23,13 +23,13 @@ const idMascotaJugador = $("#mascota-jugador")
 const sectionAnuncioCombate = $("#anuncio-combate")
 const sectionReinicio = $("#reinicio")
 const layoutBtnAtaque = $("#layout-btn-ataque")
-const spnVidasJugador = $("#vidas-jugador")
-const spnVidasEnemigo = $("#vidas-enemigo")
+const spnVictoriasJugador = $("#victorias-jugador")
+const spnVictoriasEnemigo = $("#victorias-enemigo")
+const sAnuncioCombateJugador = $("#resultado-jugador")
+const sAnuncioCombateEnemigo = $("#resultado-enemigo")
 
 // --- VARIABLES GLOBALES
 let name;
-let vidasJugador = 3
-let vidasEnemigo = 3
 let mascotaEnemiga = ""
 let mascotaJugador = ""
 let resultadoEnemigo = ""
@@ -43,10 +43,8 @@ let btnFuego
 let btnTierra
 let indexAtaqueEnemigo
 let indexAtaqueJugador
-let victoriasJugador
-let victoriasEnemigo
-
-
+let victoriasJugador = 0
+let victoriasEnemigo = 0
 
 // --- ARRAYS
 let mascotas = []
@@ -141,7 +139,7 @@ function seleccionarMascotaEnemigo() {
     let mascotaAleatoriaEnemiga = Aleatoriedad(0, mascotas.length - 1)
     
     idMascotaEnemiga.innerHTML = mascotas[mascotaAleatoriaEnemiga].nombre
-    ataqueEnemigo = mascotas[mascotaAleatoriaEnemiga].ataques
+    mascotaEnemiga = mascotas[mascotaAleatoriaEnemiga].nombre
 
     sectionSeleccionarMascota.style.display = "none"
     sectionPerfilJugadores.style.display = "flex"
@@ -207,13 +205,14 @@ function ataqueAleatorioEnemigo() {
     
     if (ataqueAleatorio === 0 || ataqueAleatorio === 1) {
         ataqueEnemigo.push("Fuego")
+        console.log(ataqueEnemigo)
     } else if (ataqueAleatorio === 2 || ataqueAleatorio === 3) {
         ataqueEnemigo.push("Agua")
+        console.log(ataqueEnemigo)
     } else {
         ataqueEnemigo.push("Tierra")
+        console.log(ataqueEnemigo)
     }   
-
-    console.log(ataqueEnemigo)
     iniciarCombate()
     sectionAnuncioCombate.style.display = "flex"
 }                              
@@ -240,27 +239,34 @@ function logicaCombate() {
             calcularResultados(i, i)
             anuncioCombate("Ganaste")
             victoriasJugador++
-            spnVidasJugador.textContent = victoriasJugador
+            spnVictoriasJugador.textContent = victoriasJugador
         } else {
             calcularResultados(i, i)
             anuncioCombate("Perdiste")
             victoriasEnemigo++
-            spnVidasEnemigo.textContent = victoriasEnemigo
+            spnVictoriasEnemigo.textContent = victoriasEnemigo
         }
     }
+    checkVictorias()
 }
 
-// --- FUNCION VERIFICAR VIDA
-function checkVidas() {
+// --- FUNCION VERIFICAR VICTORIAS
+function checkVictorias() {
     if (victoriasJugador ===  victoriasEnemigo) {
-        resultadoJugador = "<strong>EMPATE!:(</strong>"
-        resultadoEnemigo = "<strong>EMPATE!:(</strong>"
+        resultadoJugador = "<strong>EMPATE! :( </strong>"
+        resultadoEnemigo = "<strong>EMPATE! :( </strong>"
         anuncioFinalCombate()
         sectionSeleccionarAtaque.style.display = "none"
         btnReiniciar.style.display = "flex"
     } else if (victoriasJugador > victoriasEnemigo) {
         resultadoEnemigo = "<strong>PERDEDOR!!:(</strong>"
         resultadoJugador = "<strong>GANADOR!!:)</strong>"
+        anuncioFinalCombate()
+        sectionSeleccionarAtaque.style.display = "none"
+        btnReiniciar.style.display = "flex"
+    }else {
+        resultadoJugador = "<strong>PERDEDOR!!:(</strong>"
+        resultadoEnemigo = "<strong>GANADOR!!:)</strong>"
         anuncioFinalCombate()
         sectionSeleccionarAtaque.style.display = "none"
         btnReiniciar.style.display = "flex"
@@ -274,7 +280,7 @@ function anuncioCombate(resultadoCombate) {
     const sAnuncioCombate = $("#anuncio-combate")
 
     let parrafo = document.createElement("p") 
-    parrafo.innerHTML = mascotaJugador + " ataco con " + ataqueJugador + " y " + mascotaEnemiga + " ataco con " + ataqueEnemigo + " - " + resultadoCombate
+    parrafo.innerHTML = mascotaJugador + " ataco con " + indexAtaqueJugador + " y " + mascotaEnemiga + " ataco con " + indexAtaqueEnemigo + " - " + resultadoCombate
 
     sAnuncioCombate.appendChild(parrafo)
 
@@ -282,9 +288,6 @@ function anuncioCombate(resultadoCombate) {
 
 // --- FUNCION ANUNCIO FINAL DEL COMBATE
 function anuncioFinalCombate() {
-    
-    const sAnuncioCombateJugador = $("#resultado-jugador")
-    const sAnuncioCombateEnemigo = $("#resultado-enemigo")
 
     let parrafo = document.createElement("p") 
     parrafo.innerHTML = resultadoJugador
@@ -295,10 +298,6 @@ function anuncioFinalCombate() {
     parrafo2.innerHTML = resultadoEnemigo
 
     sAnuncioCombateEnemigo.appendChild(parrafo2)
-
-    btnAgua.disabled = true
-    btnFuego.disabled = true
-    btnTierra.disabled = true
 
     //sectionSeleccionarAtaque.style.display = "none"
     //sectionReinicio.style.display = "block"
