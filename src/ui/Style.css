@@ -47,7 +47,8 @@ h2 {
 }
 
 input {
-    display: none;
+    display: flex;
+    padding: 10px;
 }
 
 input:checked + .mascota-jugador {
@@ -56,7 +57,6 @@ input:checked + .mascota-jugador {
     background-color: lightyellow;
     box-shadow: 0px 0px 10px gold;
 }
-
 /* =========================================
    3. Layout (Contenedores Principales)
    ========================================= */
@@ -68,7 +68,22 @@ input:checked + .mascota-jugador {
     justify-content: center;
    }
 
-/* --- Seleccionar Ataque Jugador ---*/
+
+.layout-inicio-sesion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    z-index: 10; 
+    background: var(--secondary-color);
+    padding: 15px;
+}
+
+
 .h2-ataque{
    color: white;
 }
@@ -140,6 +155,106 @@ input:checked + .mascota-jugador {
 /* =========================================
    4. Componentes (Elementos Específicos)
    ========================================= */
+.form-login {
+    display: flex;
+    flex-direction: column;
+    background:#6f6868;
+    padding:25px;
+    width:300px;
+    height: 466px;
+    border:1px solid white;
+    z-index:10;
+    position:relative;  
+}
+
+.form-registro {
+    display: flex;
+    flex-direction: column;
+    background:#6f6868;
+    padding:25px;
+    width:300px;
+    height: 500px;
+    border:1px solid white;
+    z-index:10;
+    position:relative;  
+}
+
+
+/*grupo inputs formulario inicio sesion*/
+.grupo-input {
+    display: flex;
+    flex-direction:column;
+    margin-bottom:15px;
+    color: black;
+}
+
+.div-btnSesion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 46px;
+    gap: 13px;
+}
+
+.boton-iniciar-sesion {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+}
+
+.boton-iniciar-sesion:hover {
+    background-color: var(--text-color-light);
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    color: black
+
+}
+
+.div-btnCrearCuenta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 26px;
+}
+
+.boton-crear-cuenta {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+}
+
+.boton-crear-cuenta:hover {
+    background-color: var(--text-color-light);
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    color: black
+}
+
+/* --- Botones de sesión --- */
+.botones-sesion {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.boton-sesion {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+}
+
+
 /* --- Elección de mascota --- */
 .grupo-mascotas {
     display: flex;

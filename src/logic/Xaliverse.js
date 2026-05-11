@@ -35,6 +35,12 @@ const sAnuncioCombateJugador = $("#resultado-jugador")
 const sAnuncioCombateEnemigo = $("#resultado-enemigo")
 const imgJugador = $("#img-jugador")
 const imgEnemigo = $("#img-enemigo")
+const layoutInicioSesion = $("#section-login")
+const botonesSesion = $("#botones-sesion")
+const registrar = $("#crear-cuenta")
+const apartadoSesionRegistro = $("#apartado-sesion-registro")
+const botonInicioSesion = $("#boton-inicio-sesion")
+const botonCrearCuenta = $("#boton-crear-cuenta")
 
 // --- VARIABLES GLOBALES
 let name;
@@ -101,15 +107,83 @@ function Aleatoriedad(min, max) {
 }
 
 // --- OCULTAR SECCIONES INICIALES
+sectionSeleccionarMascota.style.display = "none"
 sectionSeleccionarAtaque.style.display = "none"
 sectionPerfilJugadores.style.display = "none"
 sectionAnuncioCombate.style.display = "none"    
 btnReiniciar.style.display = "none"
+aparecerBotonInicioSesion()
+capturarDatosForm()
+
+// --- aparecer boton de inicio sesion
+function aparecerBotonInicioSesion() {
+  botonInicioSesion.addEventListener("click", () => {
+    sectionSeleccionarMascota.style.display = "flex"
+    layoutInicioSesion.style.display = "none"
+  })
+  
+  botonCrearCuenta.addEventListener("click", () => {
+    sectionSeleccionarMascota.style.display = "flex"
+    layoutInicioSesion.style.display = "none"
+  })
+}
+
+// --- Captura los datos del form y los almacena
+function capturarDatosForm() {
+    botonInicioSesion.addEventListener('click', async () => {
+        const username = $("#username").value
+        const password = $("#password").value
+        const email = $("#email").value
+        console.log(username, password, email)
+    
+    })
+
+    botonCrearCuenta.addEventListener('click', async () => {
+        const email = $("#email").value
+        const password = $("#password").value
+        console.log(email, password)
+        registro()
+    })
+}
+
+async function registro() {
+    const email = $("#email").value;
+    const password = $("#password").value;
+
+    const { data, error } = await supabaseConexion.auth.signUp({
+        email: email,
+        password: password,
+    });
+
+    if (error) {
+        console.error("Error al registrar:", error.message);
+    } else {
+        console.log("¡Usuario registrado con éxito!", data.user);
+    }
+}
+
+async function login() {
+    const email = $("#email").value;
+    const password = $("#password").value;
+
+    const { data, error } = await supabaseConexion.auth.signInWithPassword({
+        email: email,
+        password: password,
+    });
+
+    if (error) {
+        console.error("Error al entrar:", error.message);
+        alert("Usuario o clave incorrectos");
+    } else {
+        console.log("¡Bienvenido a Xaliverse!", data.user);
+        // Aquí es donde escondes el formulario y muestras el juego
+    }
+}
 
 // --- ForEach para agregar mascotas HTML(va dentro de una funcion ojo con eso)
 mascotas.forEach(mascota => {
     plantillaMascotas = `
-        <input type="radio" name="mascota" id="${mascota.nombre}" />
+        <input type="radio" name="mascota" id="${mascota.nombre}" style="display: none;" />
         <label for="${mascota.nombre}" class="mascota-jugador">
             <img src="${mascota.img}" alt="${mascota.nombre}" />
             <p>${mascota.nombre}</p>
@@ -332,23 +406,3 @@ function reiniciarJuego() {
 // |--- 3. EVENTOS ---|
 btnSeleccionarMascotaJugador.addEventListener("click", seleccionarMascotaJugador)
 btnReiniciar.addEventListener("click", reiniciarJuego)
-
-
-//Prueba!
-async function crearPerfilDePrueba() {
-    const { data, error } = await supabase
-        .from('perfiles') // El nombre exacto de tu tabla
-        .insert([
-            { nombre_usuario: 'Heribeck', victorias: 5 }
-        ])
-        .select(); // Esto nos devuelve el dato creado para confirmar
-
-    if (error) {
-        console.error("❌ Error al insertar:", error.message);
-    } else {
-        console.log("✅ ¡Dato guardado con éxito!:", data);
-    }
-}
-
-// Ejecutamos la prueba al cargar la página
-crearPerfilDePrueba();
