@@ -333,16 +333,22 @@ function reiniciarJuego() {
 btnSeleccionarMascotaJugador.addEventListener("click", seleccionarMascotaJugador)
 btnReiniciar.addEventListener("click", reiniciarJuego)
 
-async function probarConexion() {
-    // Intentamos pedir los perfiles (aunque la tabla esté vacía)
+
+//Prueba!
+async function crearPerfilDePrueba() {
     const { data, error } = await supabase
-        .from('perfiles')
-        .select('*');
+        .from('perfiles') // El nombre exacto de tu tabla
+        .insert([
+            { nombre_usuario: 'Heribeck', victorias: 5 }
+        ])
+        .select(); // Esto nos devuelve el dato creado para confirmar
 
     if (error) {
-        console.log("❌ Error de conexión:", error.message);
+        console.error("❌ Error al insertar:", error.message);
     } else {
-        console.log("✅ ¡Conexión exitosa! Datos recibidos:", data);
+        console.log("✅ ¡Dato guardado con éxito!:", data);
     }
 }
-probarConexion();
+
+// Ejecutamos la prueba al cargar la página
+crearPerfilDePrueba();
