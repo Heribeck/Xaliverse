@@ -2,7 +2,7 @@
 // --- Configuración de Supabase
 const supabaseUrl = 'https://lpmtedwdwmdwvozgsymb.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwbXRlZHdkd21kd3ZvemdzeW1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0OTE1NDAsImV4cCI6MjA5NDA2NzU0MH0.9B9qYSMRpfjz9e_PKso1A3QMYIM1vagQKM2vzOJqCdA';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseConexion = supabase.createClient(supabaseUrl, supabaseKey);
 
 // --- Clases (Los Moldes) 
 class Xaliburz {
