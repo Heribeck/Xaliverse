@@ -1,4 +1,10 @@
-// |--- 0. Las Clases (Los Moldes)
+// |--- 0. Configuraciones Del Codigo!
+// --- Configuración de Supabase
+const supabaseUrl = 'https://lpmtedwdwmdwvozgsymb.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxwbXRlZHdkd21kd3ZvemdzeW1iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0OTE1NDAsImV4cCI6MjA5NDA2NzU0MH0.9B9qYSMRpfjz9e_PKso1A3QMYIM1vagQKM2vzOJqCdA';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+// --- Clases (Los Moldes) 
 class Xaliburz {
     constructor(nombre, vida, img) {
         this.nombre = nombre
@@ -326,5 +332,16 @@ function reiniciarJuego() {
 btnSeleccionarMascotaJugador.addEventListener("click", seleccionarMascotaJugador)
 btnReiniciar.addEventListener("click", reiniciarJuego)
 
+async function probarConexion() {
+    // Intentamos pedir los perfiles (aunque la tabla esté vacía)
+    const { data, error } = await supabase
+        .from('perfiles')
+        .select('*');
 
-
+    if (error) {
+        console.log("❌ Error de conexión:", error.message);
+    } else {
+        console.log("✅ ¡Conexión exitosa! Datos recibidos:", data);
+    }
+}
+probarConexion();
