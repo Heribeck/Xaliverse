@@ -215,26 +215,27 @@ function secuenciaAtaques() {
 // --- FUNCION ATAQUE ALEATORIO DEL ENEMIGO
 function ataqueAleatorioEnemigo() {
  
-    let ataqueAleatorio = Aleatoriedad(0, ataqueEnemigo.length - 1)
+    let ataqueAleatorio = Aleatoriedad(1, 3)
     
-    if (ataqueAleatorio === 0 || ataqueAleatorio === 1) {
-        ataqueEnemigo.push("Fuego")
+    if (ataqueAleatorio === 3) {
+        ataqueEnemigo.push("Tierra")
         console.log(ataqueEnemigo)
-    } else if (ataqueAleatorio === 2 || ataqueAleatorio === 3) {
+    } else if (ataqueAleatorio === 1) {
         ataqueEnemigo.push("Agua")
         console.log(ataqueEnemigo)
     } else {
-        ataqueEnemigo.push("Tierra")
+        ataqueEnemigo.push("Fuego")
         console.log(ataqueEnemigo)
     }   
     iniciarCombate()
-    sectionAnuncioCombate.style.display = "flex"
 }                              
 
 function iniciarCombate() {
     if (ataqueJugador.length === 5) {
         logicaCombate()
+        sectionAnuncioCombate.style.display = "flex"
     }
+    
 }
 
 function calcularResultados(jugador, enemigo) {
