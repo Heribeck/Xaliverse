@@ -1,10 +1,28 @@
 // |--- 0. Las Clases (Los Moldes)
 class Xaliburz {
-    constructor(nombre, vida, img) {
+    constructor(nombre, vida, img, x = 10, y = 10) {
         this.nombre = nombre
         this.vida = vida
         this.img = img
         this.ataques = []
+        this.x = x
+        this.y = y
+        this.ancho = 80
+        this.alto = 80
+        this.mapa = new Image()
+        this.mapa.src = img
+        this.velocidadX = 0
+        this.velocidadY = 0
+    }
+
+    pintarPersonaje(){  
+        lienzo.drawImage(
+            this.mapa,
+            this.x,
+            this.y,
+            this.ancho,
+            this.alto
+        )
     }
 }
 
@@ -29,24 +47,32 @@ const sAnuncioCombateJugador = $("#resultado-jugador")
 const sAnuncioCombateEnemigo = $("#resultado-enemigo")
 const imgJugador = $("#img-jugador")
 const imgEnemigo = $("#img-enemigo")
+const canvasMapa = $("#Mapa")
+const sectionMapa = $("#idMapa")
+
 
 // --- VARIABLES GLOBALES
 let name;
-let mascotaEnemiga = ""
-let mascotaJugador = ""
-let resultadoEnemigo = ""
-let resultadoJugador = ""
-let inputHipodoge
-let inputCapipepo
-let inputRatigueya
-let ataquesMascotas
-let btnAgua
-let btnFuego
-let btnTierra
-let indexAtaqueEnemigo
-let indexAtaqueJugador
-let victoriasJugador = 0
-let victoriasEnemigo = 0
+let mascotaEnemiga;
+let mascotaJugador;
+let resultadoEnemigo = "";
+let resultadoJugador = "";
+let inputHipodoge;
+let inputCapipepo;
+let inputRatigueya;
+let ataquesMascotas;
+let btnAgua;
+let btnFuego;
+let btnTierra;
+let indexAtaqueEnemigo;
+let indexAtaqueJugador;
+let victoriasJugador = 0;
+let victoriasEnemigo = 0;
+let lienzo = canvasMapa.getContext("2d");
+let intervalo;
+let fotoMapa = new Image();
+let mascotaJugadorObjeto;
+fotoMapa.src = "./assets/mapaPlatzi.png";
 
 // --- ARRAYS
 let mascotas = []
@@ -58,6 +84,11 @@ let ataqueEnemigo = []
 let ukato = new Xaliburz("Ukato", 3, "https://img.pokemondb.net/sprites/black-white/normal/bisharp.png")
 let tinkaton = new Xaliburz("Tinkaton", 3, "https://img.pokemondb.net/sprites/scarlet-violet/normal/tinkaton.png")
 let ratigueya = new Xaliburz("Ratigueya", 3, "./assets/mokepons_mokepon_ratigueya_attack.png")
+
+let ukatoEnemigo = new Xaliburz("Ukato", 3, "https://img.pokemondb.net/sprites/black-white/normal/bisharp.png", 100, 100)
+let tinkatonEnemigo = new Xaliburz("Tinkaton", 3, "https://img.pokemondb.net/sprites/scarlet-violet/normal/tinkaton.png", 200, 200)
+let ratigueyaEnemigo = new Xaliburz("Ratigueya", 3, "./assets/mokepons_mokepon_ratigueya_attack.png", 300, 300)
+
 
 // --- Pensar en esta sección???
 ukato.ataques.push(
@@ -99,6 +130,7 @@ sectionSeleccionarAtaque.style.display = "none"
 sectionPerfilJugadores.style.display = "none"
 sectionAnuncioCombate.style.display = "none"    
 btnReiniciar.style.display = "none"
+sectionMapa.style.display = "none"
 
 // --- ForEach para agregar mascotas HTML(va dentro de una funcion ojo con eso)
 mascotas.forEach(mascota => {
@@ -130,27 +162,133 @@ function seleccionarMascotaJugador() {
         idMascotaJugador.textContent = mascotaJugador
     }
 
+    sectionSeleccionarMascota.style.display = "none"
+    sectionMapa.style.display = "flex"
     extraerAtaques(mascotaJugador)
-    seleccionarMascotaEnemigo()
+    settingsMapa()
+    secuenciaAtaques()
+    mostrarImgJugador()
 }
 
 // --- FUNCION SELECCIÓN DE LA MASCOTA DEL ENEMIGO
-function seleccionarMascotaEnemigo() {
+function seleccionarMascotaEnemigo(enemigo) {
  
     const idMascotaEnemiga = $("#mascota-enemiga")
-    let mascotaAleatoriaEnemiga = Aleatoriedad(0, mascotas.length - 1)
+    idMascotaEnemiga.innerHTML = enemigo.nombre
     
-    idMascotaEnemiga.innerHTML = mascotas[mascotaAleatoriaEnemiga].nombre
-    mascotaEnemiga = mascotas[mascotaAleatoriaEnemiga].nombre
-
-    sectionSeleccionarMascota.style.display = "none"
-    sectionPerfilJugadores.style.display = "flex"
-    sectionSeleccionarAtaque.style.display = "flex"
-    
-    secuenciaAtaques()
-    mostrarImgJugador()
-    mostrarImgEnemigo()
 }
+
+function objetoMascotaJugador() {
+    for (let i = 0; i < mascotas.length; i++) {
+        if (mascotas[i].nombre === mascotaJugador) {
+            return mascotas[i]
+        }
+    }
+}
+
+function settingsMapa() {
+    canvasMapa.width = 800
+    canvasMapa.height = 600
+
+    intervalo = setInterval(drawMap, 50)
+
+    window.addEventListener("keydown", pressKey)
+    window.addEventListener("keyup", detenerMovimiento)
+}
+
+function drawMap() {
+    mascotaJugadorObjeto = objetoMascotaJugador()
+
+    mascotaJugadorObjeto.x += mascotaJugadorObjeto.velocidadX
+    mascotaJugadorObjeto.y += mascotaJugadorObjeto.velocidadY
+    lienzo.clearRect(0, 0, canvasMapa.width, canvasMapa.height)
+    
+    lienzo.drawImage(
+        fotoMapa,
+        0,
+        0,
+        canvasMapa.width,
+        canvasMapa.height
+    )
+    mascotaJugadorObjeto.pintarPersonaje()
+    tinkatonEnemigo.pintarPersonaje()
+    ukatoEnemigo.pintarPersonaje()
+    ratigueyaEnemigo.pintarPersonaje()
+    if (mascotaJugadorObjeto.velocidadX !== 0 || mascotaJugadorObjeto.velocidadY !== 0) {
+        revisarColision(tinkatonEnemigo)
+        revisarColision(ukatoEnemigo)
+        revisarColision(ratigueyaEnemigo)
+    }
+}
+
+function revisarColision(enemigo) {
+    const arribaEnemigo = enemigo.y
+    const abajoEnemigo = enemigo.y + enemigo.alto
+    const izquierdaEnemigo = enemigo.x
+    const derechaEnemigo = enemigo.x + enemigo.ancho
+
+    const arribaJugador = mascotaJugadorObjeto.y
+    const abajoJugador = mascotaJugadorObjeto.y + mascotaJugadorObjeto.alto
+    const izquierdaJugador = mascotaJugadorObjeto.x
+    const derechaJugador = mascotaJugadorObjeto.x + mascotaJugadorObjeto.ancho
+    
+    if (
+        abajoJugador < arribaEnemigo ||
+        arribaJugador > abajoEnemigo ||
+        derechaJugador < izquierdaEnemigo ||
+        izquierdaJugador > derechaEnemigo
+    ) {
+        return;
+    }
+    detenerMovimiento();
+    clearInterval(intervalo);
+    sectionPerfilJugadores.style.display = "flex";
+    sectionSeleccionarAtaque.style.display = "flex";
+    sectionMapa.style.display = "none";
+    console.log(enemigo);
+    mascotaEnemiga = enemigo.nombre;
+    mostrarImgEnemigo();
+    seleccionarMascotaEnemigo(enemigo);
+}
+
+function moveRight () {
+    mascotaJugadorObjeto.velocidadX = 5
+}
+
+function moveLeft () {
+    mascotaJugadorObjeto.velocidadX = -5
+}
+
+function moveUp () {
+    mascotaJugadorObjeto.velocidadY = -5
+}
+
+function moveDown () {
+    mascotaJugadorObjeto.velocidadY = 5
+}
+
+function pressKey(event) {
+    switch (event.key) {
+        case "ArrowRight":
+            moveRight()
+            break;
+        case "ArrowLeft":
+            moveLeft()
+            break;
+        case "ArrowUp":
+            moveUp()
+            break;
+        case "ArrowDown":
+            moveDown()
+            break;
+    }
+}
+
+function detenerMovimiento () {
+    mascotaJugadorObjeto.velocidadX = 0
+    mascotaJugadorObjeto.velocidadY = 0
+}
+
 
 function mostrarImgJugador() {
   

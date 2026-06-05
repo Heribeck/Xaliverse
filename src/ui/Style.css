@@ -24,9 +24,11 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    overflow: hidden;
 }
 
 body {
+    overscroll-behavior:none;
     color: var(--text-color);
     background-image: url('../../assets/Fondo4.jpg');
     background-size: cover;
@@ -67,6 +69,18 @@ input:checked + .mascota-jugador {
     align-items: center;
     justify-content: center;
    }
+
+.layout-mapa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.Mapa {
+    border: 2px solid white;
+    
+}
 
 /* --- Seleccionar Ataque Jugador ---*/
 .h2-ataque{
@@ -184,6 +198,7 @@ input:checked + .mascota-jugador {
     cursor: pointer;
     animation: btn-seleccionar-mascota 0.6s ease-out;
 }
+
 
 /* --- Elección de Ataques --- */
 .h2-ataque{

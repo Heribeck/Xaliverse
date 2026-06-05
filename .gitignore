@@ -1,3 +1,9 @@
-node_modules/
+#contraseñas e información sensible
 .env
+#los reportes que crean algunas funciones
 *.log
+# Archivos que crea el sistema (irrelevantes)
+.DS_Store
+Thumbs.db
+# Módulos y empaquetados pesados
+/node_modules
