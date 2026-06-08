@@ -1,14 +1,17 @@
 // |--- 0. Las Clases (Los Moldes)
 class Xaliburz {
-    constructor(nombre, vida, img, x = 10, y = 10) {
+    constructor(nombre, vida, img) {
         this.nombre = nombre
         this.vida = vida
         this.img = img
         this.ataques = []
-        this.x = x
-        this.y = y
         this.ancho = 80
         this.alto = 80
+        this.x = Aleatoriedad(0, canvasMapa.width - this.ancho)
+        this.y = Aleatoriedad(0, canvasMapa.height - this.alto)
+        console.log(canvasMapa.width, "ancho del canvas")
+        console.log(canvasMapa.height, "alto del canvas")
+        console.log(Aleatoriedad(0, canvasMapa.width - this.ancho), Aleatoriedad(0, canvasMapa.height - this.alto))
         this.mapa = new Image()
         this.mapa.src = img
         this.velocidadX = 0
@@ -73,6 +76,18 @@ let intervalo;
 let fotoMapa = new Image();
 let mascotaJugadorObjeto;
 fotoMapa.src = "./assets/mapaPlatzi.png";
+let alturaQueBuscamos
+let anchoDelMapa = window.innerWidth - 20
+const anchoMaximoMapa = 800
+
+if (anchoDelMapa > anchoMaximoMapa) {
+    anchoDelMapa = anchoMaximoMapa - 20 
+    console.log(anchoDelMapa, "ancho del canvas ajustado")
+}
+
+alturaQueBuscamos = anchoDelMapa * 600 / 800
+canvasMapa.width = anchoDelMapa
+canvasMapa.height = alturaQueBuscamos
 
 // --- ARRAYS
 let mascotas = []
@@ -85,9 +100,9 @@ let ukato = new Xaliburz("Ukato", 3, "https://img.pokemondb.net/sprites/black-wh
 let tinkaton = new Xaliburz("Tinkaton", 3, "https://img.pokemondb.net/sprites/scarlet-violet/normal/tinkaton.png")
 let ratigueya = new Xaliburz("Ratigueya", 3, "./assets/mokepons_mokepon_ratigueya_attack.png")
 
-let ukatoEnemigo = new Xaliburz("Ukato", 3, "https://img.pokemondb.net/sprites/black-white/normal/bisharp.png", 100, 100)
-let tinkatonEnemigo = new Xaliburz("Tinkaton", 3, "https://img.pokemondb.net/sprites/scarlet-violet/normal/tinkaton.png", 200, 200)
-let ratigueyaEnemigo = new Xaliburz("Ratigueya", 3, "./assets/mokepons_mokepon_ratigueya_attack.png", 300, 300)
+let ukatoEnemigo = new Xaliburz("Ukato", 3, "https://img.pokemondb.net/sprites/black-white/normal/bisharp.png")
+let tinkatonEnemigo = new Xaliburz("Tinkaton", 3, "https://img.pokemondb.net/sprites/scarlet-violet/normal/tinkaton.png")
+let ratigueyaEnemigo = new Xaliburz("Ratigueya", 3, "./assets/mokepons_mokepon_ratigueya_attack.png")
 
 
 // --- Pensar en esta sección???
@@ -187,8 +202,7 @@ function objetoMascotaJugador() {
 }
 
 function settingsMapa() {
-    canvasMapa.width = 800
-    canvasMapa.height = 600
+    
 
     intervalo = setInterval(drawMap, 50)
 
@@ -288,7 +302,6 @@ function detenerMovimiento () {
     mascotaJugadorObjeto.velocidadX = 0
     mascotaJugadorObjeto.velocidadY = 0
 }
-
 
 function mostrarImgJugador() {
   

@@ -77,11 +77,6 @@ input:checked + .mascota-jugador {
     justify-content: center;
 }
 
-.Mapa {
-    border: 2px solid white;
-    
-}
-
 /* --- Seleccionar Ataque Jugador ---*/
 .h2-ataque{
    color: white;
