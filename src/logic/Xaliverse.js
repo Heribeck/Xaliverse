@@ -1,7 +1,8 @@
 // |--- 0. Las Clases (Los Moldes)
 class Xaliburz {
-    constructor(nombre, vida, img) {
+    constructor(nombre, vida, img, id = null) {
         this.nombre = nombre
+        this.id = id
         this.vida = vida
         this.img = img
         this.ataques = []
@@ -9,9 +10,6 @@ class Xaliburz {
         this.alto = 80
         this.x = Aleatoriedad(0, canvasMapa.width - this.ancho)
         this.y = Aleatoriedad(0, canvasMapa.height - this.alto)
-        console.log(canvasMapa.width, "ancho del canvas")
-        console.log(canvasMapa.height, "alto del canvas")
-        console.log(Aleatoriedad(0, canvasMapa.width - this.ancho), Aleatoriedad(0, canvasMapa.height - this.alto))
         this.mapa = new Image()
         this.mapa.src = img
         this.velocidadX = 0
@@ -56,6 +54,8 @@ const sectionMapa = $("#idMapa")
 
 // --- VARIABLES GLOBALES
 let name;
+let jugadorId = null
+let enemigoId = null
 let mascotaEnemiga;
 let mascotaJugador;
 let resultadoEnemigo = "";
@@ -82,7 +82,6 @@ const anchoMaximoMapa = 800
 
 if (anchoDelMapa > anchoMaximoMapa) {
     anchoDelMapa = anchoMaximoMapa - 20 
-    console.log(anchoDelMapa, "ancho del canvas ajustado")
 }
 
 alturaQueBuscamos = anchoDelMapa * 600 / 800
@@ -91,6 +90,7 @@ canvasMapa.height = alturaQueBuscamos
 
 // --- ARRAYS
 let mascotas = []
+let mascotasEnemigos = []
 let botonesAtaques = []
 let ataqueJugador = []
 let ataqueEnemigo = []
@@ -100,38 +100,37 @@ let ukato = new Xaliburz("Ukato", 3, "https://img.pokemondb.net/sprites/black-wh
 let tinkaton = new Xaliburz("Tinkaton", 3, "https://img.pokemondb.net/sprites/scarlet-violet/normal/tinkaton.png")
 let ratigueya = new Xaliburz("Ratigueya", 3, "./assets/mokepons_mokepon_ratigueya_attack.png")
 
-let ukatoEnemigo = new Xaliburz("Ukato", 3, "https://img.pokemondb.net/sprites/black-white/normal/bisharp.png")
-let tinkatonEnemigo = new Xaliburz("Tinkaton", 3, "https://img.pokemondb.net/sprites/scarlet-violet/normal/tinkaton.png")
-let ratigueyaEnemigo = new Xaliburz("Ratigueya", 3, "./assets/mokepons_mokepon_ratigueya_attack.png")
-
-
-// --- Pensar en esta sección???
-ukato.ataques.push(
+const ukatoAtaques = [
     { nombre: "Fuego", id: "boton-fuego" },
     { nombre: "Fuego", id: "boton-fuego" },
     { nombre: "Fuego", id: "boton-fuego" },
     { nombre: "Agua", id: "boton-agua" },
     { nombre: "Tierra", id: "boton-tierra" }
-)
+]
 
-tinkaton.ataques.push(
+const tinkatonAtaques = [
     { nombre: "Agua", id: "boton-agua" },
     { nombre: "Agua", id: "boton-agua" },
     { nombre: "Agua", id: "boton-agua" },
     { nombre: "Fuego", id: "boton-fuego" },
     { nombre: "Tierra", id: "boton-tierra" }
-)
+]
 
-ratigueya.ataques.push(
+const ratigueyaAtaques = [
     { nombre: "Tierra", id: "boton-tierra" },
     { nombre: "Tierra", id: "boton-tierra" },
     { nombre: "Tierra", id: "boton-tierra" },
     { nombre: "Fuego", id: "boton-fuego" },
     { nombre: "Agua", id: "boton-agua" }
-)
+]
+
+ukato.ataques.push(...ukatoAtaques)
+
+tinkaton.ataques.push(...tinkatonAtaques)
+
+ratigueya.ataques.push(...ratigueyaAtaques)
 
 mascotas.push(ukato, tinkaton, ratigueya)
-
 
 
 // |--- 2. LÓGICA Y FUNCIONAMIENTO ---|
@@ -141,11 +140,30 @@ function Aleatoriedad(min, max) {
 }
 
 // --- OCULTAR SECCIONES INICIALES
+login();
 sectionSeleccionarAtaque.style.display = "none"
 sectionPerfilJugadores.style.display = "none"
 sectionAnuncioCombate.style.display = "none"    
 btnReiniciar.style.display = "none"
 sectionMapa.style.display = "none"
+
+function login() {
+    // TODO: Implementar lógica de login
+    fetch ("http://localhost:8080/login")
+        .then(function (res) {
+            console.log(res)
+            if (res.ok) {
+                res.json()
+                    .then(function(respuesta){
+                        console.log(respuesta)
+                        jugadorId = respuesta.id
+                    })
+            }
+        })
+        .catch(error => {
+            console.error(error)
+        })
+}
 
 // --- ForEach para agregar mascotas HTML(va dentro de una funcion ojo con eso)
 mascotas.forEach(mascota => {
@@ -177,12 +195,29 @@ function seleccionarMascotaJugador() {
         idMascotaJugador.textContent = mascotaJugador
     }
 
+    mascotaJugadorBackend(mascotaJugador)
+
     sectionSeleccionarMascota.style.display = "none"
     sectionMapa.style.display = "flex"
     extraerAtaques(mascotaJugador)
     settingsMapa()
     secuenciaAtaques()
     mostrarImgJugador()
+}
+
+function mascotaJugadorBackend(mascota) {
+    fetch(`http://localhost:8080/mascota/${jugadorId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            nombre: mascota
+        })
+    })
+    .catch(error => {
+        console.error(error)
+    })
 }
 
 // --- FUNCION SELECCIÓN DE LA MASCOTA DEL ENEMIGO
@@ -224,15 +259,56 @@ function drawMap() {
         canvasMapa.width,
         canvasMapa.height
     )
+
+    enviarPosicion(mascotaJugadorObjeto.x, mascotaJugadorObjeto.y)
+
     mascotaJugadorObjeto.pintarPersonaje()
-    tinkatonEnemigo.pintarPersonaje()
-    ukatoEnemigo.pintarPersonaje()
-    ratigueyaEnemigo.pintarPersonaje()
-    if (mascotaJugadorObjeto.velocidadX !== 0 || mascotaJugadorObjeto.velocidadY !== 0) {
-        revisarColision(tinkatonEnemigo)
-        revisarColision(ukatoEnemigo)
-        revisarColision(ratigueyaEnemigo)
-    }
+    mascotasEnemigos.forEach(function (mascota) {
+        mascota.pintarPersonaje()
+        revisarColision(mascota)
+    })
+
+}
+
+function enviarPosicion(x, y) {
+    fetch(`http://localhost:8080/mascota/${jugadorId}/posicion`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            x,
+            y
+        })
+    })
+    .then(function (res) {
+        if (res.ok){
+            res.json()
+                .then(function ({ enemigos }) {
+                    console.log(enemigos)
+                    mascotasEnemigos = enemigos.map(function (enemigo) {
+                        let mascotaEnemigo = null
+                        const mascotaNombre = enemigo.xaliburz.nombre || ""
+                        console.log(mascotaNombre)
+                        if (mascotaNombre === "Ukato")
+                            mascotaEnemigo = new Xaliburz("Ukato", 3, "https://img.pokemondb.net/sprites/black-white/normal/bisharp.png", enemigo.id)
+                        else if (mascotaNombre === "Tinkaton")
+                            mascotaEnemigo = new Xaliburz("Tinkaton", 3, "https://img.pokemondb.net/sprites/scarlet-violet/normal/tinkaton.png", enemigo.id)
+                        else if (mascotaNombre === "Ratigueya")
+                            mascotaEnemigo = new Xaliburz("Ratigueya", 3, "./assets/mokepons_mokepon_ratigueya_attack.png", enemigo.id)
+                        
+                        mascotaEnemigo.x = enemigo.x
+                        mascotaEnemigo.y = enemigo.y
+
+                        return mascotaEnemigo
+                    })
+                    
+                })
+        }
+    })
+    .catch(error => {
+        console.error(error)
+    })    
 }
 
 function revisarColision(enemigo) {
@@ -256,6 +332,7 @@ function revisarColision(enemigo) {
     }
     detenerMovimiento();
     clearInterval(intervalo);
+    enemigoId = enemigo.id;
     sectionPerfilJugadores.style.display = "flex";
     sectionSeleccionarAtaque.style.display = "flex";
     sectionMapa.style.display = "none";
@@ -358,9 +435,41 @@ function secuenciaAtaques() {
                 boton.style.backgroundColor = "#112f58"
                 console.log(ataqueJugador)
             }
-            ataqueAleatorioEnemigo()
+
+            if (ataqueJugador.length === 5) {
+                enviarAtaques()
+            }
         })
     })
+}
+
+function enviarAtaques() {
+    fetch(`http://localhost:8080/mascota/${jugadorId}/ataques`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            ataques: ataqueJugador
+        })
+    })
+
+    intervalo = setInterval(obtenerAtaques,50)
+}
+
+function obtenerAtaques() {
+    fetch(`http://localhost:8080/mascota/${enemigoId}/ataques`)
+        .then(function (res) {
+            if (res.ok) {
+                res.json().then(function ({ ataques }) {
+                    if (ataques.length === 5) {
+                        ataqueEnemigo = ataques
+                        logicaCombate()
+                    }
+                })
+            }
+        })
+    
 }
 
 // --- FUNCION ATAQUE ALEATORIO DEL ENEMIGO
@@ -396,6 +505,8 @@ function calcularResultados(jugador, enemigo) {
 
 // --- FUNCION LOGICA DEL COMBATE
 function logicaCombate() {
+
+    clearInterval(intervalo)
 
     for (let i = 0; i < ataqueJugador.length; i++) {
         if (ataqueJugador[i] === ataqueEnemigo[i]) {
